@@ -95,14 +95,14 @@
                     console.error('Error al obtener los clientes:', error);
                 });
         }
-
+        //llamar todos los metodos
         function actualizarDatos() {
             obtenerNombreBD();
             mostrarClientes();
         }
-
+       //actualizar metodos cada 5 segundos
         setInterval(actualizarDatos, 5000);
-
+        //llamar al metodo que al metodo final
         actualizarDatos();
     </script>
 </body>
