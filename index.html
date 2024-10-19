@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Conexión MySQL</title>
+    <style>
+        /* Estilo para el fondo de la página */
+        body {
+            background-color: #add8e6; 
+            font-family: Arial, sans-serif; 
+            text-align: center; 
+        }
+
+        /* Estilo para el contenedor de la lista de clientes */
+        #listaClientes {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); 
+            gap: 10px; 
+            padding: 10px; 
+            justify-items: center; 
+        }
+
+        /* Estilo para cada cliente en la cuadrícula */
+        .cliente {
+            background-color: white; 
+            border: 1px solid #ccc; 
+            border-radius: 5px; 
+            padding: 10px; 
+            box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+            transition: background-color 0.3s; 
+            width: 90%; 
+            max-width: 250px; 
+        }
+
+        /* Efecto hover para oscurecer el fondo de los datos del cliente */
+        .cliente:hover {
+            background-color: #e0e0e0; 
+        }
+    </style>
+</head>
+<body>
+    <!-- Contenedor para mostrar el nombre de la base de datos -->
+    <p id="nombreBaseDatos"></p>
+
+    <h2>Clientes:</h2>
+    
+    <!-- Lista donde se mostrarán los clientes -->
+    <div id="listaClientes"></div>
+
+    <!-- Mensaje en caso de no haber datos -->
+    <p id="mensaje" style="display:none;">No hay datos disponibles.</p>
+
+    <script>
+        // Función para obtener el nombre de la base de datos desde el servidor
+        function obtenerNombreBD() {
+            fetch('http://localhost:3000/bancodb')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Error al obtener el nombre de la base de datos');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    document.getElementById('nombreBaseDatos').textContent = `Nombre de la Base de Datos: ${data.nombre}`;
+                })
+                .catch(error => console.log('Error al obtener el nombre de la base de datos', error));
+        }
+
+        // Función para mostrar los clientes
+        function mostrarClientes() {
+            fetch('http://localhost:3000/clientes')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Error en la red');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    const lista = document.getElementById('listaClientes');
+                    lista.innerHTML = ''; 
+                    if (data.length === 0) {
+                        document.getElementById('mensaje').style.display = 'block'; 
+                    } else {
+                        document.getElementById('mensaje').style.display = 'none'; 
+                        data.forEach(cliente => {
+                            const div = document.createElement('div');
+                            div.classList.add('cliente');
+                            div.textContent = `${cliente.Nombre} ${cliente.Apellido} - ${cliente.Cedula}`;
+                            lista.appendChild(div);
+                        });
+                    }
+                })
+                .catch(error => {
+                    console.error('Error al obtener los clientes:', error);
+                });
+        }
+
+        function actualizarDatos() {
+            obtenerNombreBD();
+            mostrarClientes();
+        }
+
+        setInterval(actualizarDatos, 5000);
+
+        actualizarDatos();
+    </script>
+</body>
+</html>
