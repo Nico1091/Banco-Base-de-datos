@@ -9,23 +9,6 @@ const port = 3000;
 app.use(cors());
 app.use(express.json());
 
-// Ruta para obtener el usuario requerido 
-app.get('/usuarios', (req, res) => {
-    connection.query('SELECT * FROM Sucursal', (err, results) => {
-        if (err) {
-            console.error('Error en la consulta a la base de datos:', err.message);
-            res.status(500).send('Error en la base de datos');
-            return;
-        }
-        //en caso de que no existan datos en la tabla sucursal
-        if (results.length === 0) {
-            res.status(404).send('No se encontraron sucursales');
-            return;
-        }
-        res.json(results);
-    });
-});
-
 // llamado a la base de datos 
 app.get('/bancodb', (req, res) => {
     res.json({ nombre: connection.config.database });
