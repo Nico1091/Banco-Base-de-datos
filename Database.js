@@ -13,7 +13,7 @@ connection.connect((err) => {
         console.error('Error al conectarse a la base de datos:', err.message);
         return;
     }
-    //Mostrar la configuracion de la base de datos
+    //Mostrar la configuracion de la base de datos si esta conectada
     console.log('Conexión exitosa a la base de datos:', connection.config.database);
 });     
 
